@@ -1,0 +1,201 @@
+# =============================================================================
+# 4.0 Puberty × BMIz Interaction Models (Aim 3)
+# Updated to align with pre-registration:
+#   - GLMM: outcome ~ sex + age_c + bmiz_diff_raw + bmiz +
+#            bmiz*bmiz_diff_raw + pds_mean_c*bmiz_diff_raw + (1 | id)
+#   - Four outcomes: vomit_current, binge_current, other_current, fowg_current
+#     (restrict_current and exercise_current not available in 6.0)
+#   - FDR correction across outcomes
+#   - Run separately by reporter
+#   - Pre-registered correlations at each timepoint
+# =============================================================================
+
+library(dplyr)
+library(broom)
+library(purrr)
+library(lme4)
+library(broom.mixed)
+library(tidyr)
+
+load("data/6.0/ed_prediction_data.RData")
+
+# Load pubertal development data
+load("data/6.0/pds_scored.RData")
+
+# Join PDS with prediction data
+ed_prediction_data <- ed_prediction_data %>%
+  left_join(pds_scored, by = c("id", "timepoint"))
+
+# =============================================================================
+# 1. DATA PREPARATION
+# =============================================================================
+
+# Define behavior outcomes (available in 6.0)
+# Pre-registered: restrict_current, vomit_current, binge_current,
+#   exercise_current, fowg_current_half
+# Available: vomit_current, binge_current, other_current, fowg_current
+behaviors <- c("vomit_current",
+               "binge_current",
+               "other_current",
+               "fowg_current")
+
+# Ensure categorical variables are properly coded
+ed_prediction_data <- ed_prediction_data %>%
+  mutate(
+    sex = factor(sex),
+    timepoint = factor(timepoint, levels = c("Year 2", "Year 3", "Year 4",
+                                              "Year 5", "Year 6"))
+  )
+
+# Compute deviation scores
+ed_prediction_data <- ed_prediction_data %>%
+  arrange(id, timepoint) %>%
+  mutate(
+    bmi_diff_raw  = bmi - eBMI,
+    bmiz_diff_raw = bmiz - eBMIz
+  )
+
+# Mean center PDS within sex (per pre-registration)
+ed_prediction_data <- ed_prediction_data %>%
+  group_by(sex) %>%
+  mutate(pds_mean_c = pds_mean - mean(pds_mean, na.rm = TRUE)) %>%
+  ungroup()
+
+# Mean center age within timepoint (per pre-registration)
+ed_prediction_data <- ed_prediction_data %>%
+  group_by(timepoint) %>%
+  mutate(age_c = (agemos / 12) - mean(agemos / 12, na.rm = TRUE)) %>%
+  ungroup()
+
+# =============================================================================
+# 1b. FILTER TO PRIMARY ANALYSIS SPEC
+# =============================================================================
+# Filter to primary forecast method (mean+most_recent) and ±0.5 SD CI,
+# and ED-assessed timepoints only (Y2, Y4, Y6 — no ED data at Y3/Y5).
+# Without this, each person × timepoint has ~10 rows (5 methods × 2 CIs)
+# with the same ED outcome but different bmiz_diff_raw, inflating the
+# effective N and artificially tightening CIs for (1|id).
+ed_prediction_data <- ed_prediction_data %>%
+  filter(forecast_point == "mean+most_recent",
+         ci == "bmiz +/- 0.5",
+         timepoint %in% c("Year 2", "Year 4", "Year 6"))
+
+# =============================================================================
+# 2. PRE-REGISTERED CORRELATIONS (Aim 3)
+# =============================================================================
+# At each timepoint, correlate:
+#   - bmiz_diff_raw and pds_mean_c
+#   - bmiz_diff_raw and bmiz
+#   - pds_mean_c and each ED symptom
+
+cor_vars <- c("bmiz_diff_raw", "pds_mean_c", "bmiz",
+              "vomit_current", "binge_current", "other_current", "fowg_current")
+
+# One row per person × timepoint after filtering above
+cor_data <- ed_prediction_data %>%
+  group_by(id, timepoint) %>%
+  summarise(across(all_of(cor_vars), ~ mean(.x, na.rm = TRUE)),
+            .groups = "drop")
+
+# Compute correlations at each timepoint
+aim3_correlations <- cor_data %>%
+  group_by(timepoint) %>%
+  summarise(
+    # Pre-registered correlations
+    r_bmiz_diff_pds     = cor(bmiz_diff_raw, pds_mean_c, use = "pairwise.complete.obs"),
+    r_bmiz_diff_bmiz    = cor(bmiz_diff_raw, bmiz, use = "pairwise.complete.obs"),
+    # PDS × ED symptom correlations
+    r_pds_vomit         = cor(pds_mean_c, vomit_current, use = "pairwise.complete.obs"),
+    r_pds_binge         = cor(pds_mean_c, binge_current, use = "pairwise.complete.obs"),
+    r_pds_other         = cor(pds_mean_c, other_current, use = "pairwise.complete.obs"),
+    r_pds_fowg          = cor(pds_mean_c, fowg_current, use = "pairwise.complete.obs"),
+    # bmiz_diff × ED symptom correlations (supplementary)
+    r_bmiz_diff_vomit   = cor(bmiz_diff_raw, vomit_current, use = "pairwise.complete.obs"),
+    r_bmiz_diff_binge   = cor(bmiz_diff_raw, binge_current, use = "pairwise.complete.obs"),
+    r_bmiz_diff_other   = cor(bmiz_diff_raw, other_current, use = "pairwise.complete.obs"),
+    r_bmiz_diff_fowg    = cor(bmiz_diff_raw, fowg_current, use = "pairwise.complete.obs"),
+    n = n(),
+    .groups = "drop"
+  )
+
+# =============================================================================
+# 3. GENERALIZED LINEAR MIXED-EFFECTS MODELS (per pre-registration)
+# =============================================================================
+# Formula: outcome ~ sex + age_c + bmiz_diff_raw + bmiz*bmiz_diff_raw +
+#          pds_mean_c*bmiz_diff_raw + (1 | id)
+
+# Split by reporter
+reporter_groups <- ed_prediction_data %>%
+  filter(!is.na(reporter)) %>%
+  group_by(reporter) %>%
+  group_split()
+
+# Initialize results list
+model_results <- list()
+
+# Loop over reporter groups
+for (grp in reporter_groups) {
+  rep_label <- unique(grp$reporter)
+
+  for (outcome in behaviors) {
+    message("Fitting model for outcome: ", outcome, " | reporter: ", rep_label)
+
+    # Prepare data subset
+    df_sub <- grp %>%
+      filter(!is.na(.data[[outcome]]),
+             !is.na(sex),
+             !is.na(bmiz_below_lower),
+             !is.na(bmiz_diff_raw),
+             !is.na(bmiz),
+             !is.na(pds_mean_c),
+             !is.na(age_c),
+             !is.na(timepoint))
+
+    if (nrow(df_sub) < 50) {
+      message("Skipping (too few rows): ", outcome, " | ", rep_label)
+      next
+    }
+
+    # Fit GLMM (per pre-registration formula)
+    model <- glmer(
+      formula = as.formula(paste0(outcome, " ~ sex +
+                              age_c +
+                              bmiz_diff_raw +
+                              bmiz * bmiz_diff_raw +
+                              pds_mean_c * bmiz_diff_raw +
+                              (1 | id)")),
+      data = df_sub,
+      family = binomial,
+      control = glmerControl(optimizer = "bobyqa")
+    )
+
+    # Store results
+    model_results[[paste0(rep_label, "_", outcome)]] <-
+      tidy(model, exponentiate = TRUE, conf.int = TRUE) %>%
+      mutate(reporter = rep_label, outcome = outcome)
+  }
+}
+
+# Combine all results
+final_results <- bind_rows(model_results)
+
+# =============================================================================
+# 4. FDR CORRECTION (across outcomes, per pre-registration)
+# =============================================================================
+
+final_results <- final_results %>%
+  group_by(reporter, term) %>%
+  mutate(p.value.fdr = p.adjust(p.value, method = "fdr")) %>%
+  ungroup()
+
+# =============================================================================
+# 5. SAVE
+# =============================================================================
+
+save(final_results, aim3_correlations,
+     file = "tabs/model_results_stratified.RData")
+
+# Save prediction data with PDS for descriptives script
+save(ed_prediction_data, file = "data/6.0/ed_prediction_data_with_pds.RData")
+
+message("Aim 3 models and correlations complete.")

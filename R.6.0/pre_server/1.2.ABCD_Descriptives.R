@@ -470,3 +470,19 @@ resave(ant_ed_noedsx_list, ant_ed_threepoints_list, file = 'tabs/6.0/descriptive
 
 save(ant_ed_threepoints_noedsx_full, ant_ed_threepoints_noedsx, ant_ed, ant_ed_threepoints,
      file = 'data/6.0/cleaned_data.RData')
+
+# =============================================================================
+# 13. N male / N female in analytic sample
+# =============================================================================
+
+N_male_final <- final_sample %>%
+  filter(sex == 1) %>%
+  distinct(participant_id) %>%
+  nrow()
+
+N_female_final <- final_sample %>%
+  filter(sex == 2) %>%
+  distinct(participant_id) %>%
+  nrow()
+
+resave(N_male_final, N_female_final, file = 'tabs/6.0/descriptives_ABCD.RData')

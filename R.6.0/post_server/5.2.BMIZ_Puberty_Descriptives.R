@@ -1,0 +1,238 @@
+# 4_1_BMIZ_Puberty_Descriptives.R
+# Updated for ABCD Release 6.0
+
+load(file = "data/6.0/ed_prediction_data_with_pds.RData")
+
+# Load packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(gt)
+library(broom)
+library(purrr)
+library(forcats)
+library(reshape2)
+
+# ── 0. Fix upstream factor issues ────────────────────────────────────
+# The interaction models script may have already factored timepoint to only 3 levels
+# and converted sex — rebuild both to be safe
+ed_prediction_data <- ed_prediction_data %>%
+  mutate(
+    timepoint = factor(as.character(timepoint),
+                       levels = c("Year 2", "Year 3", "Year 4", "Year 5", "Year 6")),
+    pds_category = factor(pds_category,
+                          levels = c("Pre", "Early", "Mid", "Late", "Post"),
+                          ordered = TRUE),
+    # Handle sex whether it's numeric (1/2) or already character/factor
+    sex_label = case_when(
+      as.character(sex) %in% c("1", "Male")   ~ "Male",
+      as.character(sex) %in% c("2", "Female") ~ "Female",
+      TRUE ~ NA_character_
+    ),
+    sex_label = factor(sex_label, levels = c("Male", "Female"))
+  )
+
+# ── 1. Summary Table by Timepoint and Sex ────────────────────────────
+
+# Participant-level means (across forecast_point/ci) for each timepoint
+individual_means <- ed_prediction_data %>%
+  group_by(id, timepoint, sex_label) %>%
+  summarise(
+    agemos           = mean(agemos, na.rm = TRUE),
+    bmiz             = mean(bmiz, na.rm = TRUE),
+    bmiz_diff_raw    = mean(bmiz_diff_raw, na.rm = TRUE),
+    bmiz_below_lower = mean(bmiz_below_lower, na.rm = TRUE),
+    bmiz_above_upper = mean(bmiz_above_upper, na.rm = TRUE),
+    pds_mean         = mean(pds_mean, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Group-level summary
+summary_by_timepoint_sex <- individual_means %>%
+  group_by(timepoint, sex_label) %>%
+  summarise(
+    n = n(),
+    age_m = mean(agemos / 12, na.rm = TRUE),
+    age_sd = sd(agemos / 12, na.rm = TRUE),
+    bmiz_m = mean(bmiz, na.rm = TRUE),
+    bmiz_sd = sd(bmiz, na.rm = TRUE),
+    bmiz_diff_raw_m = mean(bmiz_diff_raw, na.rm = TRUE),
+    bmiz_diff_raw_sd = sd(bmiz_diff_raw, na.rm = TRUE),
+    pds_mean_m = mean(pds_mean, na.rm = TRUE),
+    pds_mean_sd = sd(pds_mean, na.rm = TRUE),
+    bmiz_below_lower_n = sum(bmiz_below_lower, na.rm = TRUE),
+    bmiz_below_lower_pct = mean(bmiz_below_lower, na.rm = TRUE) * 100,
+    bmiz_above_upper_n = sum(bmiz_above_upper, na.rm = TRUE),
+    bmiz_above_upper_pct = mean(bmiz_above_upper, na.rm = TRUE) * 100,
+    .groups = "drop"
+  ) %>%
+  mutate(
+    age              = sprintf("%.2f (%.2f)", age_m, age_sd),
+    bmiz             = sprintf("%.2f (%.2f)", bmiz_m, bmiz_sd),
+    bmiz_diff_raw    = sprintf("%.2f (%.2f)", bmiz_diff_raw_m, bmiz_diff_raw_sd),
+    pds_mean         = sprintf("%.2f (%.2f)", pds_mean_m, pds_mean_sd),
+    bmiz_below_lower = sprintf("%d (%.1f%%)", as.integer(bmiz_below_lower_n), bmiz_below_lower_pct),
+    bmiz_above_upper = sprintf("%d (%.1f%%)", as.integer(bmiz_above_upper_n), bmiz_above_upper_pct)
+  ) %>%
+  select(timepoint, sex_label, n, age, bmiz, bmiz_diff_raw, pds_mean,
+         bmiz_below_lower, bmiz_above_upper)
+
+# Format with gt
+descriptives_gt <- summary_by_timepoint_sex %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics by Timepoint and Sex",
+    subtitle = "Means (SD) by individual; proportions for thresholds"
+  ) %>%
+  cols_label(
+    timepoint        = "Timepoint",
+    sex_label        = "Sex",
+    n                = "N",
+    age              = "Age (Years)",
+    pds_mean         = "Pubertal Score",
+    bmiz             = "BMIZ",
+    bmiz_diff_raw    = "BMIZ Difference (Across Models)",
+    bmiz_below_lower = "Below Lower Cutoff (Across Models)",
+    bmiz_above_upper = "Above Upper Cutoff (Across Models)"
+  ) %>%
+  cols_align(align = "center", columns = everything())
+
+save(descriptives_gt, file = "tabs/bmiz_dev_descriptives_gt.RData")
+
+# ── 2. Correlation Heatmap ───────────────────────────────────────────
+
+heatmap_data <- ed_prediction_data %>%
+  mutate(age_years = agemos / 12) %>%
+  group_by(id, timepoint) %>%
+  summarise(
+    bmiz_diff_raw = mean(bmiz_diff_raw, na.rm = TRUE),
+    bmiz          = mean(bmiz, na.rm = TRUE),
+    pds_mean      = mean(pds_mean, na.rm = TRUE),
+    age_years     = mean(age_years, na.rm = TRUE),
+    pds_category  = first(pds_category),
+    sex_label     = first(sex_label),
+    .groups = "drop"
+  )
+
+# Define readable labels
+vars <- c("BMIz Deviation"          = "bmiz_diff_raw",
+          "BMIz"                   = "bmiz",
+          "Pubertal Score"         = "pds_mean",
+          "Age (years)"            = "age_years")
+
+renamed_data <- heatmap_data %>%
+  rename(!!!vars)
+
+# Sex-specific correlation matrices
+boys_cor <- renamed_data %>%
+  filter(sex_label == "Male") %>%
+  select(names(vars)) %>%
+  cor(use = "pairwise.complete.obs")
+
+girls_cor <- renamed_data %>%
+  filter(sex_label == "Female") %>%
+  select(names(vars)) %>%
+  cor(use = "pairwise.complete.obs")
+
+# Reshape: boys = upper triangle, girls = lower triangle
+boys_long <- melt(boys_cor) %>%
+  mutate(sex = "Male",
+         i = match(Var1, rownames(boys_cor)),
+         j = match(Var2, colnames(boys_cor))) %>%
+  filter(i <= j)
+
+girls_long <- melt(girls_cor) %>%
+  mutate(sex = "Female",
+         i = match(Var1, rownames(girls_cor)),
+         j = match(Var2, colnames(girls_cor))) %>%
+  filter(i >= j)
+
+cor_combined <- bind_rows(boys_long, girls_long)
+
+# Plot
+heatmap_plot <- ggplot(cor_combined, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile(
+    data = cor_combined %>% filter(i == j),
+    fill = "grey80", color = "white"
+  ) +
+  geom_tile(
+    data = cor_combined %>% filter(i != j),
+    aes(fill = value), color = "white"
+  ) +
+  geom_text(data = cor_combined %>% filter(i != j),
+            aes(label = round(value, 2)), size = 3) +
+  scale_fill_gradient2(
+    low = "#1A4F66", mid = "white", high = "#EF6C45", midpoint = 0,
+    name = "Correlation (r)"
+  ) +
+  coord_fixed() +
+  scale_x_discrete(position = "top") +
+  labs(
+    # Title/subtitle moved to the Supplementary Figure S3 caption (R&R 2026-09-26)
+    x = "", y = ""
+  ) +
+  embarktools::embark_theme_a +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 0, size = 12),
+    axis.text.y = element_text(size = 12),
+    legend.position = "right",
+    panel.grid = element_blank()
+  )
+
+save(heatmap_data, file = "tabs/heatmap_data.RData")
+ggsave(heatmap_plot, file = "figs/correlation_heatmap.png", device = ragg::agg_png,
+       width = 8, height = 6, dpi = 300)
+
+# ── 3. BMIz Difference by PDS and Sex ───────────────────────────────
+
+# Embark palette extended to 5 timepoints
+tp_colors <- c("Year 2" = "#1A4F66",   # Navy
+               "Year 3" = "#EF6C45",   # Coral
+               "Year 4" = "#C2B824",   # Chartreuse
+               "Year 5" = "#9B8EC1",   # Lavender
+               "Year 6" = "#F5A623")   # Sunrise
+
+collapsed_data <- ed_prediction_data %>%
+  arrange(id, timepoint, forecast_point) %>%
+  group_by(id, timepoint, forecast_point) %>%
+  slice(1) %>%
+  ungroup()
+
+# All forecast methods (supplementary)
+pds_all_plot <- ggplot(collapsed_data,
+       aes(x = pds_mean, y = bmiz_diff_raw, color = timepoint, fill = timepoint)) +
+  geom_smooth(method = "lm") +
+  facet_grid(forecast_point ~ sex_label) +
+  scale_color_manual(values = tp_colors) +
+  scale_fill_manual(values = tp_colors) +
+  labs(
+    title = "BMIZ Difference by Pubertal Category and Sex",
+    x = "Pubertal Development Score",
+    y = "Raw BMIZ Difference"
+  ) +
+  embarktools::embark_theme_a +
+  coord_cartesian(ylim = c(-0.5, 0.5))
+
+ggsave(pds_all_plot, file = "figs/BMIzbyPDSandSex_all.png", device = ragg::agg_png,
+       width = 8, height = 10, dpi = 300)
+
+# Mean + most recent only (main figure)
+collapsed_mmr <- collapsed_data %>%
+  filter(grepl("mean\\+most_recent|mean_most_recent", forecast_point, ignore.case = TRUE))
+
+pds_mmr_plot <- ggplot(collapsed_mmr,
+       aes(x = pds_mean, y = bmiz_diff_raw, color = timepoint, fill = timepoint)) +
+  geom_smooth(method = "lm") +
+  facet_wrap(~ sex_label, nrow = 1) +
+  scale_color_manual(values = tp_colors) +
+  scale_fill_manual(values = tp_colors) +
+  labs(
+    title = "BMIz Deviation by Pubertal Development and Sex\n(Mean + Most Recent)",
+    x = "Pubertal Development Score",
+    y = "BMIz Deviation (Observed − Forecasted)"
+  ) +
+  embarktools::embark_theme_a +
+  coord_cartesian(ylim = c(-0.5, 0.5))
+
+ggsave(pds_mmr_plot, file = "figs/BMIzbyPDSandSex.png", device = ragg::agg_png,
+       width = 10, height = 5, dpi = 300)
