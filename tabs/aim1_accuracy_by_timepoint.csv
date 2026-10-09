@@ -1,0 +1,26 @@
+"forecast_label","timepoint","median_err","n"
+"Maximum","Year 2",0.888680020133439,7761
+"Maximum","Year 3",1.24510231151158,3242
+"Maximum","Year 4",1.4553073802779,7586
+"Maximum","Year 5",1.53941555374702,7023
+"Maximum","Year 6",1.68235386871264,4288
+"Mean","Year 2",0.862163599450753,7761
+"Mean","Year 3",1.18434524327523,3242
+"Mean","Year 4",1.39121316134995,7586
+"Mean","Year 5",1.39622015307089,7023
+"Mean","Year 6",1.44548639817661,4288
+"Mean + Most Recent","Year 2",0.815800884956452,7761
+"Mean + Most Recent","Year 3",1.0994975292561,3242
+"Mean + Most Recent","Year 4",1.32714179733772,7586
+"Mean + Most Recent","Year 5",1.19849698849254,7023
+"Mean + Most Recent","Year 6",1.25285269628719,4288
+"Most Recent","Year 2",0.822117771127406,7761
+"Most Recent","Year 3",1.11607941495553,3242
+"Most Recent","Year 4",1.32702417451229,7586
+"Most Recent","Year 5",1.18211190024658,7023
+"Most Recent","Year 6",1.17773966423844,4288
+"Population Median","Year 2",2.09150302268637,7761
+"Population Median","Year 3",2.17044030993649,3242
+"Population Median","Year 4",2.2507495419657,7586
+"Population Median","Year 5",2.18371921093367,7023
+"Population Median","Year 6",2.29588934461323,4288

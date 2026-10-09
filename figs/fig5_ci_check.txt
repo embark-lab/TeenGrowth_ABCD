@@ -1,0 +1,8 @@
+Fig 5 CI check: rows = 500; NA lower/upper = 0; median band width (percentage points) = 0.015; max band width = 0.028
+   pred_prob        pred_prob_lo      pred_prob_hi    
+ Min.   :0.01068   Min.   :0.01060   Min.   :0.01076  
+ 1st Qu.:0.01556   1st Qu.:0.01549   1st Qu.:0.01563  
+ Median :0.02622   Median :0.02617   Median :0.02628  
+ Mean   :0.02891   Mean   :0.02883   Mean   :0.02898  
+ 3rd Qu.:0.03953   3rd Qu.:0.03945   3rd Qu.:0.03961  
+ Max.   :0.06385   Max.   :0.06373   Max.   :0.06397  

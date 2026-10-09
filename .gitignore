@@ -9,3 +9,7 @@ old/
 paper/
 R.5.0/
 tabs/5.0/
+figs/5.0/
+
+old/
+tabs/bayes_*.RData

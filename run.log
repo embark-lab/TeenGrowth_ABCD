@@ -1,0 +1,1283 @@
+Using script_dir = R.6.0/post_server
+
+==============================================================
+Running 3.1: 3.1.Evaluate_Forecasts.R
+==============================================================
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘sjmisc’
+
+The following object is masked from ‘package:tibble’:
+
+    add_case
+
+The following objects are masked from ‘package:labelled’:
+
+    to_character, to_factor
+
+Registered S3 method overwritten by 'tsibble':
+  method               from 
+  as_tibble.grouped_df dplyr
+
+Attaching package: ‘cgwtools’
+
+The following objects are masked from ‘package:base’:
+
+    !, dim
+
+
+Attaching package: ‘purrr’
+
+The following object is masked from ‘package:sjmisc’:
+
+    is_empty
+
+
+Attaching package: ‘tidyr’
+
+The following object is masked from ‘package:sjmisc’:
+
+    replace_na
+
+
+═══ METHOD SAMPLE SIZE DIAGNOSTIC ═══
+✓ All methods have identical sample sizes at every timepoint × training window.
+  → Differential missingness is NOT the cause of combined > max(mean, recent) in BMI error.
+
+═══ COMBINED = (MEAN + RECENT) / 2 VERIFICATION ═══
+  N individuals × timepoints checked: 29900
+  Mean |actual - expected|:  0.000000
+  Max  |actual - expected|:  0.000000
+  ✓ Confirmed: mean+most_recent ≈ (mean + most_recent) / 2 for all observations.
+
+Finished 3.1  (0.2 min)
+
+==============================================================
+Running 3.5: 3.5.Weight_Based_Accuracy_Metrics.R
+==============================================================
+
+Attaching package: ‘janitor’
+
+The following objects are masked from ‘package:sjmisc’:
+
+    remove_empty_cols, remove_empty_rows
+
+The following objects are masked from ‘package:stats’:
+
+    chisq.test, fisher.test
+
+Loading required package: lattice
+
+Attaching package: ‘caret’
+
+The following object is masked from ‘package:purrr’:
+
+    lift
+
+Coordinate system already present. Adding new coordinate system, which will
+replace the existing one.
+Coordinate system already present. Adding new coordinate system, which will
+replace the existing one.
+Finished 3.5  (0.1 min)
+
+==============================================================
+Running 4.1: 4.1.ED_Data_Join.R
+==============================================================
+Finished 4.1  (0.1 min)
+
+==============================================================
+Running 4.2: 4.2.ED_Behavior_Prediction.R
+==============================================================
+Patched: ±1.0 SD rows now use bmiz_below_lower_1sd / bmiz_above_upper_1sd
+Aim 2 models complete. Results saved to tabs/ED_behavior_prediction_results.RData
+Finished 4.2  (0.3 min)
+
+==============================================================
+Running 4.3: 4.3.ED_Behavior_Graphs.R
+==============================================================
+Rows: 384 
+Timepoints: Year 2, Year 4, Year 6 
+Outcomes: Binge eating, Fear of wt gain, Other WCB, Vomiting 
+Finished 4.3  (0.0 min)
+
+==============================================================
+Running 3.3: 3.3.CI_Width_Comparison.R
+==============================================================
+=== Available columns ===
+agemos
+adult_height_in
+median_bmi
+UW_cutoff_bmi
+median_wt
+AN_cutoff_wt
+sex
+id
+agemos_adult_ht
+.model
+eBMIz
+lower_eBMIz
+upper_eBMIz
+eBMI
+lower_eBMI
+upper_eBMI
+eWeight
+lower_eWeight
+upper_eWeight
+age_years
+height_in
+height_cm
+weight_lb
+weight_kg
+bmi
+bmiz
+adult_height_cm
+timepoint
+agemos_ed_onset
+eBMIz_diff
+eBMI_diff
+bmiz_in_ci
+bmiz_below_lower
+bmiz_above_upper
+training_window
+forecast_point
+ci
+uw
+ow
+ob
+bmiz_below_lower_1sd
+bmiz_above_upper_1sd 
+
+========== PART 1: CI WIDTH ANALYSIS ==========
+
+CI-related columns: eBMIz, lower_eBMIz, upper_eBMIz, lower_eBMI, upper_eBMI, lower_eWeight, upper_eWeight, eBMIz_diff, bmiz_below_lower, bmiz_above_upper, bmiz_below_lower_1sd, bmiz_above_upper_1sd
+
+--- CI Width Summary (all methods) ---
+     forecast_point           ci timepoint    n median_width q25_width
+1               max           95    Year 2 7632    0.7120237 0.3294958
+2               max           95    Year 3 3220    0.9094463 0.4927600
+3               max           95    Year 4 7559    0.9813220 0.5514318
+4               max           95    Year 5 7016    1.1733977 0.6872297
+5               max           95    Year 6 4286    1.2595044 0.7669294
+6               max           99    Year 2 7632    0.9357577 0.4330309
+7               max           99    Year 3 3220    1.1952151 0.6475964
+8               max           99    Year 4 7559    1.2896757 0.7247043
+9               max           99    Year 5 7016    1.5421060 0.9031729
+10              max           99    Year 6 4286    1.6552694 1.0079161
+11              max bmiz +/- 0.5    Year 2 7761    1.0000000 1.0000000
+12              max bmiz +/- 0.5    Year 3 3242    1.0000000 1.0000000
+13              max bmiz +/- 0.5    Year 4 7586    1.0000000 1.0000000
+14              max bmiz +/- 0.5    Year 5 7023    1.0000000 1.0000000
+15              max bmiz +/- 0.5    Year 6 4288    1.0000000 1.0000000
+16              max bmiz +/- 1.0    Year 2 7761    2.0000000 2.0000000
+17              max bmiz +/- 1.0    Year 3 3242    2.0000000 2.0000000
+18              max bmiz +/- 1.0    Year 4 7586    2.0000000 2.0000000
+19              max bmiz +/- 1.0    Year 5 7023    2.0000000 2.0000000
+20              max bmiz +/- 1.0    Year 6 4288    2.0000000 2.0000000
+21             mean           95    Year 2 7632    0.7120237 0.3294958
+22             mean           95    Year 3 3220    0.9094463 0.4927600
+23             mean           95    Year 4 7559    0.9813220 0.5514318
+24             mean           95    Year 5 7016    1.1733977 0.6872297
+25             mean           95    Year 6 4286    1.2595044 0.7669294
+26             mean           99    Year 2 7632    0.9357577 0.4330309
+27             mean           99    Year 3 3220    1.1952151 0.6475964
+28             mean           99    Year 4 7559    1.2896757 0.7247043
+29             mean           99    Year 5 7016    1.5421060 0.9031729
+30             mean           99    Year 6 4286    1.6552694 1.0079161
+31             mean bmiz +/- 0.5    Year 2 7761    1.0000000 1.0000000
+32             mean bmiz +/- 0.5    Year 3 3242    1.0000000 1.0000000
+33             mean bmiz +/- 0.5    Year 4 7586    1.0000000 1.0000000
+34             mean bmiz +/- 0.5    Year 5 7023    1.0000000 1.0000000
+35             mean bmiz +/- 0.5    Year 6 4288    1.0000000 1.0000000
+36             mean bmiz +/- 1.0    Year 2 7761    2.0000000 2.0000000
+37             mean bmiz +/- 1.0    Year 3 3242    2.0000000 2.0000000
+38             mean bmiz +/- 1.0    Year 4 7586    2.0000000 2.0000000
+39             mean bmiz +/- 1.0    Year 5 7023    2.0000000 2.0000000
+40             mean bmiz +/- 1.0    Year 6 4288    2.0000000 2.0000000
+41 mean+most_recent           95    Year 2 7632    0.7120237 0.3294958
+42 mean+most_recent           95    Year 3 3220    0.9094463 0.4927600
+43 mean+most_recent           95    Year 4 7559    0.9813220 0.5514318
+44 mean+most_recent           95    Year 5 7016    1.1733977 0.6872297
+45 mean+most_recent           95    Year 6 4286    1.2595044 0.7669294
+46 mean+most_recent           99    Year 2 7632    0.9357577 0.4330309
+47 mean+most_recent           99    Year 3 3220    1.1952151 0.6475964
+48 mean+most_recent           99    Year 4 7559    1.2896757 0.7247043
+49 mean+most_recent           99    Year 5 7016    1.5421060 0.9031729
+50 mean+most_recent           99    Year 6 4286    1.6552694 1.0079161
+51 mean+most_recent bmiz +/- 0.5    Year 2 7761    1.0000000 1.0000000
+52 mean+most_recent bmiz +/- 0.5    Year 3 3242    1.0000000 1.0000000
+53 mean+most_recent bmiz +/- 0.5    Year 4 7586    1.0000000 1.0000000
+54 mean+most_recent bmiz +/- 0.5    Year 5 7023    1.0000000 1.0000000
+55 mean+most_recent bmiz +/- 0.5    Year 6 4288    1.0000000 1.0000000
+56 mean+most_recent bmiz +/- 1.0    Year 2 7761    2.0000000 2.0000000
+57 mean+most_recent bmiz +/- 1.0    Year 3 3242    2.0000000 2.0000000
+58 mean+most_recent bmiz +/- 1.0    Year 4 7586    2.0000000 2.0000000
+59 mean+most_recent bmiz +/- 1.0    Year 5 7023    2.0000000 2.0000000
+60 mean+most_recent bmiz +/- 1.0    Year 6 4288    2.0000000 2.0000000
+61      most_recent           95    Year 2 7632    0.7120237 0.3294958
+62      most_recent           95    Year 3 3220    0.9094463 0.4927600
+63      most_recent           95    Year 4 7559    0.9813220 0.5514318
+64      most_recent           95    Year 5 7016    1.1733977 0.6872297
+65      most_recent           95    Year 6 4286    1.2595044 0.7669294
+66      most_recent           99    Year 2 7632    0.9357577 0.4330309
+67      most_recent           99    Year 3 3220    1.1952151 0.6475964
+68      most_recent           99    Year 4 7559    1.2896757 0.7247043
+69      most_recent           99    Year 5 7016    1.5421060 0.9031729
+70      most_recent           99    Year 6 4286    1.6552694 1.0079161
+71      most_recent bmiz +/- 0.5    Year 2 7761    1.0000000 1.0000000
+72      most_recent bmiz +/- 0.5    Year 3 3242    1.0000000 1.0000000
+73      most_recent bmiz +/- 0.5    Year 4 7586    1.0000000 1.0000000
+74      most_recent bmiz +/- 0.5    Year 5 7023    1.0000000 1.0000000
+75      most_recent bmiz +/- 0.5    Year 6 4288    1.0000000 1.0000000
+76      most_recent bmiz +/- 1.0    Year 2 7761    2.0000000 2.0000000
+77      most_recent bmiz +/- 1.0    Year 3 3242    2.0000000 2.0000000
+78      most_recent bmiz +/- 1.0    Year 4 7586    2.0000000 2.0000000
+79      most_recent bmiz +/- 1.0    Year 5 7023    2.0000000 2.0000000
+80      most_recent bmiz +/- 1.0    Year 6 4288    2.0000000 2.0000000
+81       pop_median   bmiz +/- 1    Year 2 7761    2.0000000 2.0000000
+82       pop_median   bmiz +/- 1    Year 3 3242    2.0000000 2.0000000
+83       pop_median   bmiz +/- 1    Year 4 7586    2.0000000 2.0000000
+84       pop_median   bmiz +/- 1    Year 5 7023    2.0000000 2.0000000
+85       pop_median   bmiz +/- 1    Year 6 4288    2.0000000 2.0000000
+   q75_width mean_width     sd_width    min_width max_width median_half_width
+1   1.365035   1.122346 1.509876e+00 1.174569e-04  27.18535         0.3560118
+2   1.513573   1.244086 1.380286e+00 5.493882e-04  22.32894         0.4547232
+3   1.611042   1.315677 1.359368e+00 5.493882e-04  23.85798         0.4906610
+4   1.844853   1.474880 1.346570e+00 4.272430e-05  21.03565         0.5866989
+5   1.921197   1.535145 1.220772e+00 6.678579e-03  16.46967         0.6297522
+6   1.793960   1.475013 1.984314e+00 1.543645e-04  35.72761         0.4678789
+7   1.989172   1.635007 1.814003e+00 7.220185e-04  29.34520         0.5976075
+8   2.117269   1.729093 1.786513e+00 7.220185e-04  31.35470         0.6448379
+9   2.424547   1.938320 1.769693e+00 5.614925e-05  27.64553         0.7710530
+10  2.524881   2.017522 1.604367e+00 8.777140e-03  21.64481         0.8276347
+11  1.000000   1.000000 1.994908e-15 1.000000e+00   1.00000         0.5000000
+12  1.000000   1.000000 1.970674e-15 1.000000e+00   1.00000         0.5000000
+13  1.000000   1.000000 2.006502e-15 1.000000e+00   1.00000         0.5000000
+14  1.000000   1.000000 2.022129e-15 1.000000e+00   1.00000         0.5000000
+15  1.000000   1.000000 2.072123e-15 1.000000e+00   1.00000         0.5000000
+16  2.000000   2.000000 2.801309e-15 2.000000e+00   2.00000         1.0000000
+17  2.000000   2.000000 2.790000e-15 2.000000e+00   2.00000         1.0000000
+18  2.000000   2.000000 2.811110e-15 2.000000e+00   2.00000         1.0000000
+19  2.000000   2.000000 2.803634e-15 2.000000e+00   2.00000         1.0000000
+20  2.000000   2.000000 2.797201e-15 2.000000e+00   2.00000         1.0000000
+21  1.365035   1.122346 1.509876e+00 1.174569e-04  27.18535         0.3560118
+22  1.513573   1.244086 1.380286e+00 5.493882e-04  22.32894         0.4547232
+23  1.611042   1.315677 1.359368e+00 5.493882e-04  23.85798         0.4906610
+24  1.844853   1.474880 1.346570e+00 4.272430e-05  21.03565         0.5866989
+25  1.921197   1.535145 1.220772e+00 6.678579e-03  16.46967         0.6297522
+26  1.793960   1.475013 1.984314e+00 1.543645e-04  35.72761         0.4678789
+27  1.989172   1.635007 1.814003e+00 7.220185e-04  29.34520         0.5976075
+28  2.117269   1.729093 1.786513e+00 7.220185e-04  31.35470         0.6448379
+29  2.424547   1.938320 1.769693e+00 5.614925e-05  27.64553         0.7710530
+30  2.524881   2.017522 1.604367e+00 8.777140e-03  21.64481         0.8276347
+31  1.000000   1.000000 2.011379e-15 1.000000e+00   1.00000         0.5000000
+32  1.000000   1.000000 2.046286e-15 1.000000e+00   1.00000         0.5000000
+33  1.000000   1.000000 2.036149e-15 1.000000e+00   1.00000         0.5000000
+34  1.000000   1.000000 2.060480e-15 1.000000e+00   1.00000         0.5000000
+35  1.000000   1.000000 2.003403e-15 1.000000e+00   1.00000         0.5000000
+36  2.000000   2.000000 2.814192e-15 2.000000e+00   2.00000         1.0000000
+37  2.000000   2.000000 2.840778e-15 2.000000e+00   2.00000         1.0000000
+38  2.000000   2.000000 2.844868e-15 2.000000e+00   2.00000         1.0000000
+39  2.000000   2.000000 2.847135e-15 2.000000e+00   2.00000         1.0000000
+40  2.000000   2.000000 2.814016e-15 2.000000e+00   2.00000         1.0000000
+41  1.365035   1.122346 1.509876e+00 1.174569e-04  27.18535         0.3560118
+42  1.513573   1.244086 1.380286e+00 5.493882e-04  22.32894         0.4547232
+43  1.611042   1.315677 1.359368e+00 5.493882e-04  23.85798         0.4906610
+44  1.844853   1.474880 1.346570e+00 4.272430e-05  21.03565         0.5866989
+45  1.921197   1.535145 1.220772e+00 6.678579e-03  16.46967         0.6297522
+46  1.793960   1.475013 1.984314e+00 1.543645e-04  35.72761         0.4678789
+47  1.989172   1.635007 1.814003e+00 7.220185e-04  29.34520         0.5976075
+48  2.117269   1.729093 1.786513e+00 7.220185e-04  31.35470         0.6448379
+49  2.424547   1.938320 1.769693e+00 5.614925e-05  27.64553         0.7710530
+50  2.524881   2.017522 1.604367e+00 8.777140e-03  21.64481         0.8276347
+51  1.000000   1.000000 1.991191e-15 1.000000e+00   1.00000         0.5000000
+52  1.000000   1.000000 1.992094e-15 1.000000e+00   1.00000         0.5000000
+53  1.000000   1.000000 2.040762e-15 1.000000e+00   1.00000         0.5000000
+54  1.000000   1.000000 1.971641e-15 1.000000e+00   1.00000         0.5000000
+55  1.000000   1.000000 1.950541e-15 1.000000e+00   1.00000         0.5000000
+56  2.000000   2.000000 2.806645e-15 2.000000e+00   2.00000         1.0000000
+57  2.000000   2.000000 2.807613e-15 2.000000e+00   2.00000         1.0000000
+58  2.000000   2.000000 2.816865e-15 2.000000e+00   2.00000         1.0000000
+59  2.000000   2.000000 2.792927e-15 2.000000e+00   2.00000         1.0000000
+60  2.000000   2.000000 2.798726e-15 2.000000e+00   2.00000         1.0000000
+61  1.365035   1.122346 1.509876e+00 1.174569e-04  27.18535         0.3560118
+62  1.513573   1.244086 1.380286e+00 5.493882e-04  22.32894         0.4547232
+63  1.611042   1.315677 1.359368e+00 5.493882e-04  23.85798         0.4906610
+64  1.844853   1.474880 1.346570e+00 4.272430e-05  21.03565         0.5866989
+65  1.921197   1.535145 1.220772e+00 6.678579e-03  16.46967         0.6297522
+66  1.793960   1.475013 1.984314e+00 1.543645e-04  35.72761         0.4678789
+67  1.989172   1.635007 1.814003e+00 7.220185e-04  29.34520         0.5976075
+68  2.117269   1.729093 1.786513e+00 7.220185e-04  31.35470         0.6448379
+69  2.424547   1.938320 1.769693e+00 5.614925e-05  27.64553         0.7710530
+70  2.524881   2.017522 1.604367e+00 8.777140e-03  21.64481         0.8276347
+71  1.000000   1.000000 1.999663e-15 1.000000e+00   1.00000         0.5000000
+72  1.000000   1.000000 2.041498e-15 1.000000e+00   1.00000         0.5000000
+73  1.000000   1.000000 2.047922e-15 1.000000e+00   1.00000         0.5000000
+74  1.000000   1.000000 1.991892e-15 1.000000e+00   1.00000         0.5000000
+75  1.000000   1.000000 2.007283e-15 1.000000e+00   1.00000         0.5000000
+76  2.000000   2.000000 2.792433e-15 2.000000e+00   2.00000         1.0000000
+77  2.000000   2.000000 2.793041e-15 2.000000e+00   2.00000         1.0000000
+78  2.000000   2.000000 2.836471e-15 2.000000e+00   2.00000         1.0000000
+79  2.000000   2.000000 2.784123e-15 2.000000e+00   2.00000         1.0000000
+80  2.000000   2.000000 2.769099e-15 2.000000e+00   2.00000         1.0000000
+81  2.000000   2.000000 0.000000e+00 2.000000e+00   2.00000         1.0000000
+82  2.000000   2.000000 0.000000e+00 2.000000e+00   2.00000         1.0000000
+83  2.000000   2.000000 0.000000e+00 2.000000e+00   2.00000         1.0000000
+84  2.000000   2.000000 0.000000e+00 2.000000e+00   2.00000         1.0000000
+85  2.000000   2.000000 0.000000e+00 2.000000e+00   2.00000         1.0000000
+
+--- CI Width: mean+most_recent only ---
+             ci timepoint    n median_width median_half_width q25_width
+1            95    Year 2 7632    0.7120237         0.3560118 0.3294958
+2            95    Year 3 3220    0.9094463         0.4547232 0.4927600
+3            95    Year 4 7559    0.9813220         0.4906610 0.5514318
+4            95    Year 5 7016    1.1733977         0.5866989 0.6872297
+5            95    Year 6 4286    1.2595044         0.6297522 0.7669294
+6            99    Year 2 7632    0.9357577         0.4678789 0.4330309
+7            99    Year 3 3220    1.1952151         0.5976075 0.6475964
+8            99    Year 4 7559    1.2896757         0.6448379 0.7247043
+9            99    Year 5 7016    1.5421060         0.7710530 0.9031729
+10           99    Year 6 4286    1.6552694         0.8276347 1.0079161
+11 bmiz +/- 0.5    Year 2 7761    1.0000000         0.5000000 1.0000000
+12 bmiz +/- 0.5    Year 3 3242    1.0000000         0.5000000 1.0000000
+13 bmiz +/- 0.5    Year 4 7586    1.0000000         0.5000000 1.0000000
+14 bmiz +/- 0.5    Year 5 7023    1.0000000         0.5000000 1.0000000
+15 bmiz +/- 0.5    Year 6 4288    1.0000000         0.5000000 1.0000000
+16 bmiz +/- 1.0    Year 2 7761    2.0000000         1.0000000 2.0000000
+17 bmiz +/- 1.0    Year 3 3242    2.0000000         1.0000000 2.0000000
+18 bmiz +/- 1.0    Year 4 7586    2.0000000         1.0000000 2.0000000
+19 bmiz +/- 1.0    Year 5 7023    2.0000000         1.0000000 2.0000000
+20 bmiz +/- 1.0    Year 6 4288    2.0000000         1.0000000 2.0000000
+   q75_width
+1   1.365035
+2   1.513573
+3   1.611042
+4   1.844853
+5   1.921197
+6   1.793960
+7   1.989172
+8   2.117269
+9   2.424547
+10  2.524881
+11  1.000000
+12  1.000000
+13  1.000000
+14  1.000000
+15  1.000000
+16  2.000000
+17  2.000000
+18  2.000000
+19  2.000000
+20  2.000000
+
+--- Key comparison: median half-width vs fixed thresholds ---
+  ±0.5 SD: fixed half-width = 0.50 BMIz
+  ±1.0 SD: fixed half-width = 1.00 BMIz
+   ci timepoint median_half_width                 vs_05                vs_10
+1  95    Year 2         0.3560118  0.36 (71.2% of ±0.5) 0.36 (35.6% of ±1.0)
+2  95    Year 3         0.4547232  0.45 (90.9% of ±0.5) 0.45 (45.5% of ±1.0)
+3  95    Year 4         0.4906610  0.49 (98.1% of ±0.5) 0.49 (49.1% of ±1.0)
+4  95    Year 5         0.5866989 0.59 (117.3% of ±0.5) 0.59 (58.7% of ±1.0)
+5  95    Year 6         0.6297522 0.63 (126.0% of ±0.5) 0.63 (63.0% of ±1.0)
+6  99    Year 2         0.4678789  0.47 (93.6% of ±0.5) 0.47 (46.8% of ±1.0)
+7  99    Year 3         0.5976075 0.60 (119.5% of ±0.5) 0.60 (59.8% of ±1.0)
+8  99    Year 4         0.6448379 0.64 (129.0% of ±0.5) 0.64 (64.5% of ±1.0)
+9  99    Year 5         0.7710530 0.77 (154.2% of ±0.5) 0.77 (77.1% of ±1.0)
+10 99    Year 6         0.8276347 0.83 (165.5% of ±0.5) 0.83 (82.8% of ±1.0)
+
+========== PART 2: ED PREDICTION BY CI × TIMEPOINT ==========
+
+--- below_lower: OR and significance by CI × timepoint ---
+             ci timepoint n_tests n_sig_raw n_sig_fdr median_OR  mean_OR
+1            95    Year 2      16         2         0  1.243441 1.269665
+2            95    Year 4      16         7         6  1.474132 1.757840
+3            95    Year 6      16         6         6  1.951875 2.229575
+4            99    Year 2      16         3         3  1.320672 1.384510
+5            99    Year 4      16         7         7  1.717839 1.979268
+6            99    Year 6      16         5         4  1.744048 2.220823
+7  bmiz +/- 0.5    Year 2      16         4         2  1.341703 1.764355
+8  bmiz +/- 0.5    Year 4      16         5         3  1.540400 1.889323
+9  bmiz +/- 0.5    Year 6      16         4         0  1.362018 1.868155
+10 bmiz +/- 1.0    Year 2      16         5         5  2.526374 3.978635
+11 bmiz +/- 1.0    Year 4      16         8         8  2.259757 2.843690
+12 bmiz +/- 1.0    Year 6      16         8         6  2.816550 3.072146
+
+--- above_upper: OR and significance by CI × timepoint ---
+             ci timepoint n_tests n_sig_raw n_sig_fdr median_OR  mean_OR
+1            95    Year 2      16         2         1 1.1269972 1.220485
+2            95    Year 4      16         2         2 1.2266013 1.207726
+3            95    Year 6      16         6         5 1.5098830 2.644992
+4            99    Year 2      16         2         0 1.2674809 1.328034
+5            99    Year 4      16         2         1 1.1814629 1.197851
+6            99    Year 6      16         5         4 1.2971761 2.094588
+7  bmiz +/- 0.5    Year 2      16         3         1 1.0070482 1.022312
+8  bmiz +/- 0.5    Year 4      16         1         0 0.9711531 1.054759
+9  bmiz +/- 0.5    Year 6      16         2         1 1.1974024 1.987060
+10 bmiz +/- 1.0    Year 2      16         0         0 0.9181295 0.790071
+11 bmiz +/- 1.0    Year 4      16         0         0 1.0220903 1.110878
+12 bmiz +/- 1.0    Year 6      16         2         2 1.2104748 1.757155
+
+--- Direct comparison: 95% CI vs ±0.5 SD at each timepoint ---
+
+  Timepoint: Year 2
+       bmiz +/- 0.5: 2/16 sig (FDR), median OR = 1.34
+                 95: 0/16 sig (FDR), median OR = 1.24
+                 99: 3/16 sig (FDR), median OR = 1.32
+
+  Timepoint: Year 4
+       bmiz +/- 0.5: 3/16 sig (FDR), median OR = 1.54
+                 95: 6/16 sig (FDR), median OR = 1.47
+                 99: 7/16 sig (FDR), median OR = 1.72
+
+  Timepoint: Year 6
+       bmiz +/- 0.5: 0/16 sig (FDR), median OR = 1.36
+                 95: 6/16 sig (FDR), median OR = 1.95
+                 99: 4/16 sig (FDR), median OR = 1.74
+
+========== PART 3: FIX ±1.0 SD ACCURACY METRICS ==========
+
+Using standard forecast data (full-sample not found)
+--- Corrected ±1.0 SD UW accuracy (mean+most_recent) ---
+    forecast_point timepoint    n n_uw n_below_lower sensitivity specificity
+1 mean+most_recent    Year 2 7761  318           168   0.1698113   0.9846836
+2 mean+most_recent    Year 3 3242  138           163   0.3913043   0.9648840
+3 mean+most_recent    Year 4 7586  269           308   0.3122677   0.9693864
+4 mean+most_recent    Year 5 7023  226           324   0.3318584   0.9633662
+5 mean+most_recent    Year 6 4288  129           161   0.2403101   0.9687425
+        ppv       npv balanced_accuracy        f1           ci
+1 0.3214286 0.9652311         0.5772475 0.2222222 bmiz +/- 1.0
+2 0.3312883 0.9727184         0.6780942 0.3588040 bmiz +/- 1.0
+3 0.2727273 0.9745809         0.6408270 0.2911612 bmiz +/- 1.0
+4 0.2314815 0.9774593         0.6476123 0.2727273 bmiz +/- 1.0
+5 0.1925466 0.9762539         0.6045263 0.2137931 bmiz +/- 1.0
+
+--- Corrected ±1.0 SD OW accuracy (mean+most_recent) ---
+    forecast_point timepoint    n n_ow n_above_upper sensitivity specificity
+1 mean+most_recent    Year 2 7761 2243           256  0.03967900   0.9697354
+2 mean+most_recent    Year 3 3242  967           154  0.07445708   0.9639560
+3 mean+most_recent    Year 4 7586 2263           575  0.11091471   0.9391321
+4 mean+most_recent    Year 5 7023 1895           410  0.09920844   0.9567083
+5 mean+most_recent    Year 6 4288 1226           228  0.09298532   0.9627694
+        ppv       npv balanced_accuracy         f1           ci
+1 0.3476562 0.7129913         0.5047072 0.07122849 bmiz +/- 1.0
+2 0.4675325 0.7101684         0.5192066 0.12845674 bmiz +/- 1.0
+3 0.4365217 0.7130224         0.5250234 0.17688513 bmiz +/- 1.0
+4 0.4585366 0.7418721         0.5279584 0.16312364 bmiz +/- 1.0
+5 0.5000000 0.7261084         0.5278774 0.15680880 bmiz +/- 1.0
+
+--- Verification: ±0.5 vs ±1.0 now different? ---
+  ±0.5 sensitivities: 0.403, 0.58, 0.558, 0.491, 0.512
+  ±1.0 sensitivities: 0.17, 0.391, 0.312, 0.332, 0.24
+  Different? TRUE
+
+Corrected accuracy_metrics.RData saved.
+CI width analysis saved to tabs/ci_width_analysis.RData
+
+========== SUMMARY FOR PAPER ==========
+
+--- Median CI half-width (BMIz units) for mean+most_recent ---
+  (Compare to fixed ±0.5 SD = 0.50 and ±1.0 SD = 1.00)
+  timepoint     CI_95     CI_99
+1    Year 2 0.3560118 0.4678789
+2    Year 3 0.4547232 0.5976075
+3    Year 4 0.4906610 0.6448379
+4    Year 5 0.5866989 0.7710530
+5    Year 6 0.6297522 0.8276347
+
+--- Classification: % below predicted by CI × timepoint ---
+             ci timepoint pct_below pct_above
+1            95    Year 2      17.2      21.0
+2            99    Year 2      13.9      16.9
+3  bmiz +/- 0.5    Year 2       9.8      14.0
+4            95    Year 3      17.9      20.0
+5            99    Year 3      14.4      15.7
+6  bmiz +/- 0.5    Year 3      14.9      17.7
+7            95    Year 4      15.3      24.6
+8            99    Year 4      12.1      18.8
+9  bmiz +/- 0.5    Year 4      14.3      24.8
+10           95    Year 5      14.3      16.1
+11           99    Year 5      11.1      12.0
+12 bmiz +/- 0.5    Year 5      14.5      19.5
+13           95    Year 6      11.6      15.7
+14           99    Year 6       8.5      11.1
+15 bmiz +/- 0.5    Year 6      13.4      20.0
+
+Done.
+Finished 3.3  (0.0 min)
+
+==============================================================
+Running 3.4: 3.4.CI_Stability_By_Npoints.R
+==============================================================
+=== Data dimensions ===
+  Rows: 508300, Participants: 9250
+Computed visit_num from row order
+
+  Rows with CI data: 237704
+  CI width range: 0.000 to 35.728
+
+========== CI WIDTH BY n_points ==========
+
+--- Distribution of visit_num ---
+
+    3     4     5     6     7 
+72560 67920 56776 34192  6256 
+--- CI half-width by n_points (mean+most_recent) ---
+   ci visit_num    n median_half_width       q25       q75       iqr
+1  95         3 9070         0.3527886 0.1632144 0.6776280 0.5144137
+2  95         4 8490         0.4818894 0.2715670 0.7955511 0.5239841
+3  95         5 7097         0.5831250 0.3468991 0.9097643 0.5628652
+4  95         6 4274         0.6300249 0.3921391 0.9635883 0.5714492
+5  95         7  782         0.6574657 0.4048816 0.9355229 0.5306413
+6  99         3 9070         0.4636428 0.2145000 0.8905542 0.6760541
+7  99         4 8490         0.6333100 0.3568995 1.0455313 0.6886318
+8  99         5 7097         0.7663562 0.4559027 1.1956329 0.7397302
+9  99         6 4274         0.8279931 0.5153581 1.2663696 0.7510116
+10 99         7  782         0.8640564 0.5321046 1.2294855 0.6973809
+   sd_half_width        cv
+1      0.7565946 2.1446119
+2      0.6920161 1.4360477
+3      0.6529203 1.1196918
+4      0.6176848 0.9804132
+5      0.5254095 0.7991436
+6      0.9943338 2.1446119
+7      0.9094633 1.4360477
+8      0.8580827 1.1196918
+9      0.8117754 0.9804132
+10     0.6905051 0.7991436
+
+--- CI half-width by n_points × timepoint (mean+most_recent, 99% CI) ---
+   timepoint visit_num    n median_half_width sd_half_width
+1     Year 2         3 7632         0.4678789     0.9921569
+2     Year 3         3  808         0.4603000     0.9941836
+3     Year 3         4 2412         0.6478900     0.8722440
+4     Year 4         3  521         0.4555065     1.0463798
+5     Year 4         4 5059         0.6144914     0.8984900
+6     Year 4         5 1979         0.7564228     0.8275234
+7     Year 5         3   94         0.3890442     0.8197332
+8     Year 5         4  877         0.7080338     1.0212634
+9     Year 5         5 4394         0.7574552     0.8852275
+10    Year 5         6 1651         0.8348265     0.8017537
+11    Year 6         4  142         0.7124060     1.1352426
+12    Year 6         5  724         0.8390586     0.7666739
+13    Year 6         6 2623         0.8208954     0.8181669
+14    Year 6         7  782         0.8640564     0.6905051
+
+========== WITHIN-TIMEPOINT CI WIDTH VARIABILITY ==========
+
+--- Within-timepoint variability in CI half-width ---
+   ci timepoint    n median_half_width sd_half_width        cv min_half_width
+1  95    Year 2 7632         0.3560118     0.7549381 2.1205423   5.872844e-05
+2  95    Year 3 3220         0.4547232     0.6901431 1.5177214   2.746941e-04
+3  95    Year 4 7559         0.4906610     0.6796841 1.3852417   2.746941e-04
+4  95    Year 5 7016         0.5866989     0.6732850 1.1475819   2.136215e-05
+5  95    Year 6 4286         0.6297522     0.6103862 0.9692482   3.339289e-03
+6  99    Year 2 7632         0.4678789     0.9921569 2.1205423   7.718225e-05
+7  99    Year 3 3220         0.5976075     0.9070017 1.5177214   3.610092e-04
+8  99    Year 4 7559         0.6448379     0.8932563 1.3852417   3.610092e-04
+9  99    Year 5 7016         0.7710530     0.8848464 1.1475819   2.807462e-05
+10 99    Year 6 4286         0.8276347     0.8021834 0.9692482   4.388570e-03
+   max_half_width range_ratio
+1       13.592675  231449.629
+2       11.164470   40643.283
+3       11.928991   43426.456
+4       10.517825  492357.978
+5        8.234833    2466.044
+6       17.863803  231449.629
+7       14.672601   40643.283
+8       15.677352   43426.456
+9       13.822765  492357.978
+10      10.822405    2466.044
+
+========== REGRESSION: CI width ~ n_points + timepoint ==========
+
+--- 95% CI: half-width ~ visit_num + timepoint ---
+  R-squared: 0.0138
+  Adj R-squared: 0.0135
+  R² from timepoint alone: 0.0119
+  Additional R² from visit_num: 0.0019
+  visit_num coefficients (relative to visit_num=3):
+                   Estimate Std. Error t value Pr(>|t|)
+factor(visit_num)4   0.1088     0.0201  5.4110        0
+factor(visit_num)5   0.1676     0.0230  7.2730        0
+factor(visit_num)6   0.1837     0.0267  6.8812        0
+factor(visit_num)7   0.1562     0.0367  4.2540        0
+--- 99% CI: half-width ~ visit_num + timepoint ---
+  R-squared: 0.0138
+  Adj R-squared: 0.0135
+  R² from timepoint alone: 0.0119
+  Additional R² from visit_num: 0.0019
+  visit_num coefficients (relative to visit_num=3):
+                   Estimate Std. Error t value Pr(>|t|)
+factor(visit_num)4   0.1430     0.0264  5.4110        0
+factor(visit_num)5   0.2202     0.0303  7.2730        0
+factor(visit_num)6   0.2414     0.0351  6.8812        0
+factor(visit_num)7   0.2052     0.0482  4.2540        0
+
+========== STABILIZATION ANALYSIS ==========
+
+--- 95% CI: pairwise width comparisons ---
+  visit 3→4: median change = +0.1291, p = 0.0000, n1=9070, n2=8490
+  visit 4→5: median change = +0.1012, p = 0.0000, n1=8490, n2=7097
+  visit 5→6: median change = +0.0469, p = 0.0000, n1=7097, n2=4274
+  visit 6→7: median change = +0.0274, p = 0.6609, n1=4274, n2=782
+--- 99% CI: pairwise width comparisons ---
+  visit 3→4: median change = +0.1697, p = 0.0000, n1=9070, n2=8490
+  visit 4→5: median change = +0.1330, p = 0.0000, n1=8490, n2=7097
+  visit 5→6: median change = +0.0616, p = 0.0000, n1=7097, n2=4274
+  visit 6→7: median change = +0.0361, p = 0.6609, n1=4274, n2=782
+
+========== IMPACT ON ED PREDICTION ==========
+
+--- CI width groups ---
+   ci timepoint ci_width_group    n median_half_width median_visit_num
+1  95    Year 2         narrow 7640             0.165                4
+2  95    Year 2           wide 7640             0.682                4
+3  95    Year 3         narrow 3134             0.247                5
+4  95    Year 3           wide 3133             0.757                5
+5  95    Year 4         narrow 6916             0.277                6
+6  95    Year 4           wide 6916             0.806                6
+7  95    Year 5         narrow 6582             0.346                7
+8  95    Year 5           wide 6580             0.926                8
+9  95    Year 6         narrow 4225             0.383                9
+10 95    Year 6           wide 4222             0.959                9
+11 99    Year 2         narrow 7640             0.216                4
+12 99    Year 2           wide 7640             0.896                4
+13 99    Year 3         narrow 3134             0.325                5
+14 99    Year 3           wide 3133             0.994                5
+15 99    Year 4         narrow 6916             0.364                6
+16 99    Year 4           wide 6916             1.059                6
+17 99    Year 5         narrow 6582             0.455                7
+18 99    Year 5           wide 6580             1.217                8
+19 99    Year 6         narrow 4225             0.503                9
+20 99    Year 6           wide 4222             1.261                9
+
+--- ED associations by CI width group (99% CI, mean+most_recent) ---
+  vomit_current | narrow CI width: OR = 1.12, p = 0.4819, n = 20055
+  vomit_current | wide CI width: OR = 2.34, p = 0.0070, n = 20074
+  binge_current | narrow CI width: OR = 0.75, p = 0.0006, n = 20055
+  binge_current | wide CI width: OR = 0.61, p = 0.0401, n = 20074
+  other_current | narrow CI width: OR = 1.04, p = 0.5430, n = 20055
+  other_current | wide CI width: OR = 1.21, p = 0.2445, n = 20074
+  fowg_current | narrow CI width: OR = 0.95, p = 0.6622, n = 20055
+  fowg_current | wide CI width: OR = 1.09, p = 0.7910, n = 20074
+
+Done.
+Finished 3.4  (0.1 min)
+
+==============================================================
+Running 5.1: 5.1.Puberty_BMIZ_Interaction_Models.R
+==============================================================
+Loading required package: Matrix
+
+Attaching package: ‘Matrix’
+
+The following objects are masked from ‘package:tidyr’:
+
+    expand, pack, unpack
+
+Fitting model for outcome: vomit_current | reporter: parent
+Fitting model for outcome: binge_current | reporter: parent
+Fitting model for outcome: other_current | reporter: parent
+Fitting model for outcome: fowg_current | reporter: parent
+Fitting model for outcome: vomit_current | reporter: youth
+Fitting model for outcome: binge_current | reporter: youth
+Fitting model for outcome: other_current | reporter: youth
+Fitting model for outcome: fowg_current | reporter: youth
+Aim 3 models and correlations complete.
+Finished 5.1  (2.9 min)
+
+==============================================================
+Running 5.2: 5.2.BMIZ_Puberty_Descriptives.R
+==============================================================
+
+Attaching package: ‘reshape2’
+
+The following object is masked from ‘package:tidyr’:
+
+    smiths
+
+`geom_smooth()` using formula = 'y ~ x'
+`geom_smooth()` using formula = 'y ~ x'
+Finished 5.2  (0.0 min)
+
+==============================================================
+Running 5.3: 5.3.Marginal_Effects_Plots.R
+==============================================================
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+Fitting GLMM models by reporter...
+  Youth × vomit_current (n = 18644)
+  Youth × binge_current (n = 18644)
+  Youth × other_current (n = 18644)
+  Youth × fowg_current (n = 18644)
+  Parent × vomit_current (n = 18082)
+  Parent × binge_current (n = 18082)
+  Parent × other_current (n = 18082)
+  Parent × fowg_current (n = 18082)
+
+=== KEY COEFFICIENTS (raw log-odds scale) ===
+Positive β for bmiz_diff_raw = above-forecast increases risk
+Negative β for bmiz_diff_raw = below-forecast increases risk
+
+   reporter outcome       term                    
+1  Parent   binge_current bmiz                    
+2  Parent   binge_current bmiz_diff_raw           
+3  Parent   binge_current bmiz_diff_raw:pds_mean_c
+4  Parent   binge_current pds_mean_c              
+5  Parent   fowg_current  bmiz                    
+6  Parent   fowg_current  bmiz_diff_raw           
+7  Parent   fowg_current  bmiz_diff_raw:pds_mean_c
+8  Parent   fowg_current  pds_mean_c              
+9  Parent   other_current bmiz                    
+10 Parent   other_current bmiz_diff_raw           
+11 Parent   other_current bmiz_diff_raw:pds_mean_c
+12 Parent   other_current pds_mean_c              
+13 Parent   vomit_current bmiz                    
+14 Parent   vomit_current bmiz_diff_raw           
+15 Parent   vomit_current bmiz_diff_raw:pds_mean_c
+16 Parent   vomit_current pds_mean_c              
+17 Youth    binge_current bmiz                    
+18 Youth    binge_current bmiz_diff_raw           
+19 Youth    binge_current bmiz_diff_raw:pds_mean_c
+20 Youth    binge_current pds_mean_c              
+21 Youth    fowg_current  bmiz                    
+22 Youth    fowg_current  bmiz_diff_raw           
+23 Youth    fowg_current  bmiz_diff_raw:pds_mean_c
+24 Youth    fowg_current  pds_mean_c              
+25 Youth    other_current bmiz                    
+26 Youth    other_current bmiz_diff_raw           
+27 Youth    other_current bmiz_diff_raw:pds_mean_c
+28 Youth    other_current pds_mean_c              
+29 Youth    vomit_current bmiz                    
+30 Youth    vomit_current bmiz_diff_raw           
+31 Youth    vomit_current bmiz_diff_raw:pds_mean_c
+32 Youth    vomit_current pds_mean_c              
+   summary                                           
+1  β = +0.875 (OR = 2.40 [2.36, 2.43]) p = 0.0000 *  
+2  β = +0.427 (OR = 1.53 [1.51, 1.56]) p = 0.0000 *  
+3  β = +0.330 (OR = 1.39 [1.37, 1.41]) p = 0.0000 *  
+4  β = -0.220 (OR = 0.80 [0.79, 0.81]) p = 0.0000 *  
+5  β = +0.595 (OR = 1.81 [1.81, 1.82]) p = 0.0000 *  
+6  β = -0.336 (OR = 0.71 [0.71, 0.72]) p = 0.0000 *  
+7  β = -0.316 (OR = 0.73 [0.73, 0.73]) p = 0.0000 *  
+8  β = +1.868 (OR = 6.47 [6.44, 6.50]) p = 0.0000 *  
+9  β = +0.503 (OR = 1.65 [1.65, 1.66]) p = 0.0000 *  
+10 β = -0.531 (OR = 0.59 [0.59, 0.59]) p = 0.0000 *  
+11 β = -0.231 (OR = 0.79 [0.79, 0.80]) p = 0.0000 *  
+12 β = +1.317 (OR = 3.73 [3.72, 3.75]) p = 0.0000 *  
+13 β = +0.387 (OR = 1.47 [0.22, 9.89]) p = 0.6902    
+14 β = -0.570 (OR = 0.57 [0.08, 3.80]) p = 0.5571    
+15 β = -0.916 (OR = 0.40 [0.13, 1.25]) p = 0.1161    
+16 β = +0.443 (OR = 1.56 [0.85, 2.84]) p = 0.1488    
+17 β = +0.396 (OR = 1.49 [1.30, 1.70]) p = 0.0000 *  
+18 β = -0.384 (OR = 0.68 [0.56, 0.83]) p = 0.0002 *  
+19 β = -0.218 (OR = 0.80 [0.62, 1.04]) p = 0.0957    
+20 β = +0.584 (OR = 1.79 [1.55, 2.07]) p = 0.0000 *  
+21 β = +0.616 (OR = 1.85 [0.88, 3.91]) p = 0.1068    
+22 β = +0.220 (OR = 1.25 [0.55, 2.82]) p = 0.5966    
+23 β = -0.507 (OR = 0.60 [0.32, 1.13]) p = 0.1147    
+24 β = +2.531 (OR = 12.56 [8.07, 19.55]) p = 0.0000 *
+25 β = +0.607 (OR = 1.84 [1.69, 1.99]) p = 0.0000 *  
+26 β = -0.287 (OR = 0.75 [0.65, 0.86]) p = 0.0001 *  
+27 β = -0.067 (OR = 0.93 [0.78, 1.12]) p = 0.4606    
+28 β = +0.656 (OR = 1.93 [1.72, 2.15]) p = 0.0000 *  
+29 β = +0.563 (OR = 1.76 [1.75, 1.77]) p = 0.0000 *  
+30 β = -0.664 (OR = 0.51 [0.51, 0.52]) p = 0.0000 *  
+31 β = +0.303 (OR = 1.35 [1.35, 1.36]) p = 0.0000 *  
+32 β = +1.375 (OR = 3.96 [3.94, 3.98]) p = 0.0000 *  
+
+Coefficient table saved to tabs/aim3_glmm_coefficients.csv
+
+PDS category → mean pds_mean_c mapping:
+  pds_category pds_mean_c     n
+1          Pre -1.2163209  2283
+2        Early -0.8186323  4616
+3          Mid -0.2245195 10895
+4         Late  0.4445256 14388
+5         Post  0.9226932  3159
+Marginal effects interaction plots saved to figs/
+
+=== MARGINAL SLOPE OF bmiz_diff_raw AT MODERATOR LEVELS ===
+(slope = d[logit(P)] / d[bmiz_diff_raw] = β1_main + β3_interaction × moderator_value)
+Negative slope = below-forecast (negative deviation) increases risk
+Positive slope = above-forecast (positive deviation) increases risk
+
+--- Youth-reported ---
+  vomit_current:
+    β1 (bmiz_diff_raw main)      = -0.6639
+    β3 (bmiz × deviation)        = -0.0287
+    β4 (pds × deviation)         = +0.3031
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.6543  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.6754  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.6979  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = -1.0326  → BELOW-forecast = higher risk
+      at Early (-0.82): slope = -0.9121  → BELOW-forecast = higher risk
+      at Mid (-0.22): slope = -0.7320  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.5292  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.3843  → BELOW-forecast = higher risk
+
+  binge_current:
+    β1 (bmiz_diff_raw main)      = -0.3839
+    β3 (bmiz × deviation)        = +0.0380
+    β4 (pds × deviation)         = -0.2180
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.3967  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.3687  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.3389  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = -0.1188  → BELOW-forecast = higher risk
+      at Early (-0.82): slope = -0.2055  → BELOW-forecast = higher risk
+      at Mid (-0.22): slope = -0.3350  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.4808  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.5850  → BELOW-forecast = higher risk
+
+  other_current:
+    β1 (bmiz_diff_raw main)      = -0.2871
+    β3 (bmiz × deviation)        = -0.0193
+    β4 (pds × deviation)         = -0.0673
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.2806  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.2948  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.3100  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = -0.2052  → BELOW-forecast = higher risk
+      at Early (-0.82): slope = -0.2320  → BELOW-forecast = higher risk
+      at Mid (-0.22): slope = -0.2720  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.3170  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.3492  → BELOW-forecast = higher risk
+
+  fowg_current:
+    β1 (bmiz_diff_raw main)      = +0.2203
+    β3 (bmiz × deviation)        = +0.0017
+    β4 (pds × deviation)         = -0.5074
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = +0.2197  → ABOVE-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = +0.2209  → ABOVE-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = +0.2223  → ABOVE-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = +0.8374  → ABOVE-forecast = higher risk
+      at Early (-0.82): slope = +0.6356  → ABOVE-forecast = higher risk
+      at Mid (-0.22): slope = +0.3342  → ABOVE-forecast = higher risk
+      at Late (0.44): slope = -0.0053  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.2479  → BELOW-forecast = higher risk
+
+--- Parent-reported ---
+  vomit_current:
+    β1 (bmiz_diff_raw main)      = -0.5704
+    β3 (bmiz × deviation)        = +0.0812
+    β4 (pds × deviation)         = -0.9156
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.5977  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.5379  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.4741  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = +0.5433  → ABOVE-forecast = higher risk
+      at Early (-0.82): slope = +0.1791  → ABOVE-forecast = higher risk
+      at Mid (-0.22): slope = -0.3648  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.9774  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -1.4152  → BELOW-forecast = higher risk
+
+  binge_current:
+    β1 (bmiz_diff_raw main)      = +0.4271
+    β3 (bmiz × deviation)        = -0.1468
+    β4 (pds × deviation)         = +0.3297
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = +0.4766  → ABOVE-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = +0.3684  → ABOVE-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = +0.2530  → ABOVE-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = +0.0261  → ABOVE-forecast = higher risk
+      at Early (-0.82): slope = +0.1572  → ABOVE-forecast = higher risk
+      at Mid (-0.22): slope = +0.3531  → ABOVE-forecast = higher risk
+      at Late (0.44): slope = +0.5737  → ABOVE-forecast = higher risk
+      at Post (0.92): slope = +0.7314  → ABOVE-forecast = higher risk
+
+  other_current:
+    β1 (bmiz_diff_raw main)      = -0.5309
+    β3 (bmiz × deviation)        = +0.0361
+    β4 (pds × deviation)         = -0.2314
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.5430  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.5165  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.4881  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = -0.2494  → BELOW-forecast = higher risk
+      at Early (-0.82): slope = -0.3414  → BELOW-forecast = higher risk
+      at Mid (-0.22): slope = -0.4789  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.6338  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.7444  → BELOW-forecast = higher risk
+
+  fowg_current:
+    β1 (bmiz_diff_raw main)      = -0.3355
+    β3 (bmiz × deviation)        = +0.1000
+    β4 (pds × deviation)         = -0.3158
+    BMIz moderation:
+      at Lower (25th %ile) (-0.34): slope = -0.3692  → BELOW-forecast = higher risk
+      at Mean (50th %ile) (0.40): slope = -0.2955  → BELOW-forecast = higher risk
+      at Higher (75th %ile) (1.19): slope = -0.2169  → BELOW-forecast = higher risk
+    PDS moderation:
+      at Pre (-1.22): slope = +0.0485  → ABOVE-forecast = higher risk
+      at Early (-0.82): slope = -0.0770  → BELOW-forecast = higher risk
+      at Mid (-0.22): slope = -0.2646  → BELOW-forecast = higher risk
+      at Late (0.44): slope = -0.4759  → BELOW-forecast = higher risk
+      at Post (0.92): slope = -0.6269  → BELOW-forecast = higher risk
+
+Marginal slope table saved to tabs/aim3_marginal_slopes.csv
+
+=== Moderator Levels Used ===
+BMIz quantiles (25th, 50th, 75th):
+  25%   50%   75% 
+-0.34  0.40  1.19 
+
+PDS category → mean pds_mean_c values used:
+   Pre  Early    Mid   Late   Post 
+-1.216 -0.819 -0.225  0.445  0.923 
+
+Deviation range (2nd–98th percentile):
+   2%   98% 
+-1.17  1.46 
+
+=== Model Convergence Summary ===
+  Youth:
+    vomit_current: converged (18644 obs, 8804 groups)
+    binge_current: converged (18644 obs, 8804 groups)
+    other_current: converged (18644 obs, 8804 groups)
+    fowg_current: converged (18644 obs, 8804 groups)
+  Parent:
+    vomit_current: converged (18082 obs, 8647 groups)
+    binge_current: converged (18082 obs, 8647 groups)
+    other_current: converged (18082 obs, 8647 groups)
+    fowg_current: converged (18082 obs, 8647 groups)
+Finished 5.3  (3.8 min)
+
+==============================================================
+Running 6.1: 6.1.Imputation_Sensitivity.R
+==============================================================
+
+Attaching package: ‘mice’
+
+The following object is masked from ‘package:stats’:
+
+    filter
+
+The following objects are masked from ‘package:base’:
+
+    cbind, rbind
+
+Loading required package: future
+
+Attaching package: ‘future’
+
+The following object is masked from ‘package:caret’:
+
+    cluster
+
+
+========== MISSINGNESS DIAGNOSTICS ==========
+
+--- Missing values per variable ---
+              n_total n_missing pct_missing
+sex             37871         0        0.00
+age_c           37871         0        0.00
+bmiz_diff_raw   37871         0        0.00
+bmiz            37871         0        0.00
+pds_mean_c      37871       667        1.76
+vomit_current   37871       510        1.35
+binge_current   37871       510        1.35
+other_current   37871       510        1.35
+fowg_current    37871       510        1.35
+id              37871         0        0.00
+timepoint       37871         0        0.00
+reporter        37871       256        0.68
+
+--- Missing PDS by reporter ---
+# A tibble: 3 × 6
+  reporter     n pds_missing pds_pct age_missing age_pct
+  <chr>    <int>       <int>   <dbl>       <int>   <dbl>
+1 parent   18524         320     1.7           0       0
+2 youth    19091         319     1.7           0       0
+3 <NA>       256          28    10.9           0       0
+
+--- Missing PDS by timepoint ---
+# A tibble: 3 × 4
+  timepoint     n pds_missing pds_pct
+  <fct>     <int>       <int>   <dbl>
+1 Year 2    15538         338     2.2
+2 Year 4    13882         236     1.7
+3 Year 6     8451          93     1.1
+  parent | vomit_current: full=18399, complete-case=18082, lost=317 (1.7%)
+  parent | binge_current: full=18399, complete-case=18082, lost=317 (1.7%)
+  parent | other_current: full=18399, complete-case=18082, lost=317 (1.7%)
+  parent | fowg_current: full=18399, complete-case=18082, lost=317 (1.7%)
+  youth | vomit_current: full=18962, complete-case=18644, lost=318 (1.7%)
+  youth | binge_current: full=18962, complete-case=18644, lost=318 (1.7%)
+  youth | other_current: full=18962, complete-case=18644, lost=318 (1.7%)
+  youth | fowg_current: full=18962, complete-case=18644, lost=318 (1.7%)
+
+Attaching package: ‘naniar’
+
+The following object is masked from ‘package:sjmisc’:
+
+    all_na
+
+
+--- Little's MCAR test ---
+# A tibble: 1 × 4
+  statistic    df p.value missing.patterns
+      <dbl> <dbl>   <dbl>            <int>
+1      247.    20       0                4
+
+========== IMPUTATION SENSITIVITY ANALYSIS ==========
+
+Parallel imputation-model fitting on 12 core(s).
+
+--- Reporter: parent ---
+  Running mice with 20 imputations...
+  Fitting GLMMs on each imputed dataset (parallel)...
+    Outcome: vomit_current
+    Outcome: binge_current
+    Outcome: other_current
+    Outcome: fowg_current
+
+--- Reporter: youth ---
+  Running mice with 20 imputations...
+  Fitting GLMMs on each imputed dataset (parallel)...
+    Outcome: vomit_current
+    Outcome: binge_current
+    Outcome: other_current
+    Outcome: fowg_current
+
+========== COMPARISON: COMPLETE-CASE vs IMPUTED ==========
+
+--- Significance changes ---
+
+   Both significant Gained significance   Lost significance Neither significant 
+                 26                   1                  19                  18 
+
+--- Terms where significance changed ---
+                       term reporter       outcome      cc_p_fdr     mi_p_fdr
+1                     age_c   parent binge_current  7.712343e-54 6.273364e-01
+2  bmiz_diff_raw:pds_mean_c   parent binge_current  0.000000e+00 6.593893e-02
+3                      bmiz   parent other_current  5.972687e-02 3.023219e-05
+4                     age_c   parent  fowg_current  0.000000e+00 6.273364e-01
+5             bmiz_diff_raw   parent  fowg_current  0.000000e+00 4.519995e-01
+6                      bmiz   parent  fowg_current  0.000000e+00 1.672527e-01
+7        bmiz_diff_raw:bmiz   parent  fowg_current 1.918655e-285 3.075699e-01
+8  bmiz_diff_raw:pds_mean_c   parent  fowg_current  0.000000e+00 2.543942e-01
+9                      sex2    youth vomit_current  1.665052e-02 4.919456e-01
+10                    age_c    youth vomit_current  0.000000e+00 7.248025e-01
+11            bmiz_diff_raw    youth vomit_current  0.000000e+00 1.939615e-01
+12                     bmiz    youth vomit_current  0.000000e+00 6.814117e-02
+13       bmiz_diff_raw:bmiz    youth vomit_current  1.824838e-43 7.985920e-01
+14 bmiz_diff_raw:pds_mean_c    youth vomit_current  0.000000e+00 3.716822e-01
+15                    age_c    youth binge_current  0.000000e+00 7.248025e-01
+16       bmiz_diff_raw:bmiz    youth binge_current  1.045993e-83 7.985920e-01
+17 bmiz_diff_raw:pds_mean_c    youth binge_current  0.000000e+00 3.716822e-01
+18                     sex2    youth  fowg_current  1.184711e-06 7.098657e-02
+19                    age_c    youth  fowg_current  4.637093e-36 7.248025e-01
+20            bmiz_diff_raw    youth  fowg_current  0.000000e+00 1.939615e-01
+            sig_change
+1    Lost significance
+2    Lost significance
+3  Gained significance
+4    Lost significance
+5    Lost significance
+6    Lost significance
+7    Lost significance
+8    Lost significance
+9    Lost significance
+10   Lost significance
+11   Lost significance
+12   Lost significance
+13   Lost significance
+14   Lost significance
+15   Lost significance
+16   Lost significance
+17   Lost significance
+18   Lost significance
+19   Lost significance
+20   Lost significance
+
+--- Key terms: complete-case vs imputed ORs ---
+                       term reporter       outcome cc_or mi_or or_diff
+1             bmiz_diff_raw   parent binge_current 4.954 1.522  -3.432
+2             bmiz_diff_raw   parent  fowg_current 1.967 0.716  -1.251
+3             bmiz_diff_raw   parent other_current 1.777 0.594  -1.183
+4             bmiz_diff_raw   parent vomit_current 1.631 0.558  -1.073
+5             bmiz_diff_raw    youth binge_current 1.952 0.673  -1.279
+6             bmiz_diff_raw    youth  fowg_current 3.174 1.345  -1.829
+7             bmiz_diff_raw    youth other_current 2.108 0.755  -1.353
+8             bmiz_diff_raw    youth vomit_current 1.730 0.603  -1.127
+9        bmiz_diff_raw:bmiz   parent binge_current 2.374 0.872  -1.502
+10       bmiz_diff_raw:bmiz   parent  fowg_current 2.993 1.108  -1.885
+11       bmiz_diff_raw:bmiz   parent other_current 2.818 1.039  -1.779
+12       bmiz_diff_raw:bmiz   parent vomit_current 2.964 1.068  -1.896
+13       bmiz_diff_raw:bmiz    youth binge_current 2.823 1.031  -1.792
+14       bmiz_diff_raw:bmiz    youth  fowg_current 2.721 0.981  -1.740
+15       bmiz_diff_raw:bmiz    youth other_current 2.667 0.978  -1.689
+16       bmiz_diff_raw:bmiz    youth vomit_current 2.650 0.915  -1.735
+17 bmiz_diff_raw:pds_mean_c   parent binge_current 4.134 1.372  -2.762
+18 bmiz_diff_raw:pds_mean_c   parent  fowg_current 2.242 0.758  -1.484
+19 bmiz_diff_raw:pds_mean_c   parent other_current 2.241 0.769  -1.472
+20 bmiz_diff_raw:pds_mean_c   parent vomit_current 1.505 0.495  -1.010
+21 bmiz_diff_raw:pds_mean_c    youth binge_current 2.244 0.871  -1.373
+22 bmiz_diff_raw:pds_mean_c    youth  fowg_current 1.786 0.607  -1.179
+23 bmiz_diff_raw:pds_mean_c    youth other_current 2.545 0.942  -1.603
+24 bmiz_diff_raw:pds_mean_c    youth vomit_current 3.607 1.424  -2.183
+        cc_p_fdr     mi_p_fdr          sig_change
+1   0.000000e+00 2.229672e-02    Both significant
+2   0.000000e+00 4.519995e-01   Lost significance
+3   4.932745e-02 1.637255e-04    Both significant
+4   4.638752e-01 4.519995e-01 Neither significant
+5   0.000000e+00 2.625639e-05    Both significant
+6   0.000000e+00 1.939615e-01   Lost significance
+7   3.346084e-05 1.539701e-04    Both significant
+8   0.000000e+00 1.939615e-01   Lost significance
+9   1.247498e-01 2.987224e-01 Neither significant
+10 1.918655e-285 3.075699e-01   Lost significance
+11  6.464802e-01 3.817078e-01 Neither significant
+12  6.464802e-01 6.151855e-01 Neither significant
+13  1.045993e-83 7.985920e-01   Lost significance
+14  7.307336e-01 8.593481e-01 Neither significant
+15  7.307336e-01 7.985920e-01 Neither significant
+16  1.824838e-43 7.985920e-01   Lost significance
+17  0.000000e+00 6.593893e-02   Lost significance
+18  0.000000e+00 2.543942e-01   Lost significance
+19  2.552268e-01 6.593893e-02 Neither significant
+20  1.687109e-01 1.618287e-01 Neither significant
+21  0.000000e+00 3.716822e-01   Lost significance
+22  0.000000e+00 3.064806e-02    Both significant
+23  4.534781e-01 5.088284e-01 Neither significant
+24  0.000000e+00 3.716822e-01   Lost significance
+
+Saved to tabs/aim3_imputation_sensitivity.RData
+
+========== DONE ==========
+Finished 6.1  (11.5 min)
+
+==============================================================
+Running 6.2: 6.2.Bayesian_GLMM_Sensitivity.R
+==============================================================
+Loading required package: Rcpp
+Loading 'brms' package (version 2.22.0). Useful instructions
+can be found by typing help('brms'). A more detailed introduction
+to the package is available through vignette('brms_overview').
+
+Attaching package: ‘brms’
+
+The following object is masked from ‘package:lme4’:
+
+    ngrps
+
+The following object is masked from ‘package:stats’:
+
+    ar
+
+Parallel Bayesian fit: 12 cores -> 3 model(s) at a time x 4 chains each.
+
+═══ CONVERGENCE DIAGNOSTICS (verify Rhat<1.01, divergent=0) ═══
+ reporter       outcome n_obs n_events n_divergent max_rhat min_ess_bulk
+    youth vomit_current 18644      252          10 1.027771     236.4663
+   parent vomit_current 18082       86           0 1.009782     391.2301
+    youth binge_current 18644     1406           0 1.010083     656.3610
+   parent binge_current 18082      476           0 1.008796     843.9139
+    youth other_current 18644     1671           0 1.009733     662.7558
+   parent other_current 18082      715           0 1.008755     743.0552
+    youth  fowg_current 18644      418           0 1.009877     657.4568
+   parent  fowg_current 18082      243           0 1.009210     734.5536
+
+--- Overall concordance ---
+
+                              Bayes only 
+                                       6 
+                        Both significant 
+                                      30 
+Freq only (possible separation artifact) 
+                                      15 
+                     Neither significant 
+                                      13 
+
+Bayesian sensitivity complete. Saved to tabs/aim3_bayesian_sensitivity.RData
+Individual model objects saved to tabs/bayes_*.RData
+Finished 6.2  (14.5 min)
+
+==============================================================
+Running 8.1: 8.1.Figure2_Forecast_Comparison.R
+==============================================================
+Saved: figs/fig2_forecast_comparison_ijed.png (14 x 7 in @ 300 dpi)
+Sex stratification: ON
+
+--- Sex differences in median BMI error ---
+# A tibble: 5 × 7
+  forecast_label     median_bmi_error_Female median_bmi_error_Male
+  <fct>                                <dbl>                 <dbl>
+1 Mean                                  1.32                  1.11
+2 Most Recent                           1.14                  1.05
+3 Mean + Most Recent                    1.18                  1.04
+4 Maximum                               1.26                  1.29
+5 Population Median                     2.32                  2.09
+# ℹ 4 more variables: mean_bmi_error_Female <dbl>, mean_bmi_error_Male <dbl>,
+#   n_Female <int>, n_Male <int>
+
+--- Sex differences by timepoint (Mean + Most Recent method) ---
+# A tibble: 5 × 5
+  timepoint median_bmi_error_Female median_bmi_error_Male n_Female n_Male
+  <fct>                       <dbl>                 <dbl>    <int>  <int>
+1 Year 2                      0.857                 0.784     3662   4099
+2 Year 3                      1.18                  1.03      1561   1681
+3 Year 4                      1.46                  1.22      3603   3983
+4 Year 5                      1.28                  1.13      3371   3652
+5 Year 6                      1.31                  1.20      2043   2245
+Finished 8.1  (0.1 min)
+
+==============================================================
+Running 8.2: 8.2.Supplemental_Tables.R
+==============================================================
+Paper dir: /Users/katherineschaumberg/ABCD
+Tabs dir:  /Users/katherineschaumberg/ABCD/tabs
+Output:    /Users/katherineschaumberg/ABCD/Supplementary_Tables.xlsx
+
+S1: GLMM Coefficients
+  Merging Bayesian sensitivity estimates
+  OK: S1-GLMM Coefficients -> 64 rows x 12 cols
+S2: Forecast Accuracy
+  OK: S2-Forecast Accuracy -> 85 rows x 11 cols
+S3: Classification Accuracy
+  Loaded objects: ob_summary, ow_summary, uw_summary
+  OK: S3-Classification Accuracy -> 240 rows x 16 cols
+  Loaded objects: binary_combined_results, classification_results, logistic_results
+S4: Continuous Logistic
+  OK: S4-Continuous Logistic -> 816 rows x 11 cols
+S5: Binary Combined
+  OK: S5-Binary Combined -> 3264 rows x 12 cols
+S6: Classification Metrics
+  OK: S6-Classification Metrics -> 3264 rows x 14 cols
+S7: Marginal Slopes
+  OK: S7-Marginal Slopes -> 64 rows x 9 cols
+S8: Stratified Models
+  OK: S8-Stratified Models -> 64 rows x 9 cols
+
+Saved: /Users/katherineschaumberg/ABCD/Supplementary_Tables.xlsx
+Sheets: S1-GLMM Coefficients, S2-Forecast Accuracy, S3-Classification Accuracy, S4-Continuous Logistic, S5-Binary Combined, S6-Classification Metrics, S7-Marginal Slopes, S8-Stratified Models
+Finished 8.2  (0.0 min)
+There were 50 or more warnings (use warnings() to see the first 50)
+
+==============================================================
+ALL POST-SERVER SCRIPTS COMPLETED in 33.6 min.
+==============================================================
